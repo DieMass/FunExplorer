@@ -10,6 +10,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+/**
+ * Популяция индивидов
+ * @param <T>
+ */
 @AllArgsConstructor
 @Getter
 @ToString
@@ -21,6 +25,15 @@ public class Population<T extends Chromosome<T>> {
 	private final PopulationConfig config;
 	private final Set<T> individuals = new HashSet<>();
 
+	/**
+	 * Создание популяции
+	 * @param min минимальное значение для гена
+	 * @param max максимальное значение для гена
+	 * @param config настройки популяции
+	 * @param create функция создание индивида
+	 * @param <T> тип хромосомы индивида
+	 * @return созданная популяция
+	 */
 	public static <T extends Chromosome<T>> Population<T> createRandom(T min,
 																	   T max,
 																	   PopulationConfig config,
@@ -34,6 +47,11 @@ public class Population<T extends Chromosome<T>> {
 		return population;
 	}
 
+
+	/**
+	 * Запуск генетического алгоритма для популяции
+	 * @param fitFunction Функция вычисления значения приспособленности для индивида
+	 */
 	public void run(Function<T, Double> fitFunction) {
 		individuals.forEach(i -> i.fit(fitFunction));
 		for (int i = 0; i < config.getGenerationCount(); i++) {

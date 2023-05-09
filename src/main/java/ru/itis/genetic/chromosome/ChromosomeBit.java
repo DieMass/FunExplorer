@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Класс реализации хромосомы с битовым геномом
+ */
 @AllArgsConstructor
 @Getter
 @ToString(callSuper = true)
@@ -20,10 +23,20 @@ public class ChromosomeBit extends ChromosomeAbstract<ChromosomeBit> {
 		return genes;
 	}
 
+	/**
+	 * Создание хромосомы со случайным битовым геномом
+	 * @param genotypeSize размер хромосомы
+	 * @return Хромосома с битовым геномом
+	 */
 	public static ChromosomeBit create(Integer genotypeSize) {
 		return new ChromosomeBit(ChromosomeUtils.createBooleanArray(genotypeSize));
 	}
 
+	/**
+	 * Создание хромосомы с указанным битовым геномом
+	 * @param genes Битовый геном
+	 * @return Хромосома с битовым геномом
+	 */
 	public static ChromosomeBit create(Boolean[] genes) {
 		return new ChromosomeBit(genes);
 	}

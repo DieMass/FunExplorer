@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * Класс реализации хромосомы с геномом различных типов
+ */
 @AllArgsConstructor
 @Getter
 @ToString
@@ -26,10 +29,24 @@ public class ChromosomeMix extends ChromosomeAbstract<ChromosomeMix> {
 		return result;
 	}
 
+	/**
+	 * Создание хромосомы с указанным геномом различных типов
+	 * @param booleans Битовый геном
+	 * @param longs Целочисленный геном
+	 * @param doubles Вещественный геном
+	 * @return Хромосома с геномом различных типов
+	 */
 	public static ChromosomeMix create(Boolean[] booleans, Long[] longs, Double[] doubles) {
 		return new ChromosomeMix(booleans, longs, doubles);
 	}
 
+	/**
+	 * Создание хромосомы со случайным геномом различных типов
+	 * @param min Хромосома с минимальными значениями генов
+	 * @param max Хромосома с максимальными значениями генов
+	 * @return Хромосома со случайным геномом различных типов
+	 * @throws WrongChromosomeLengthException При различных длинах хромосом
+	 */
 	public static ChromosomeMix create(ChromosomeMix min, ChromosomeMix max) {
 		if (min.getGenes().length != max.getGenes().length ||
 			min.getBooleans().length != max.getBooleans().length ||

@@ -8,6 +8,9 @@ import ru.itis.genetic.exception.WrongChromosomeLengthException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Класс реализации хромосомы с целочисленным геномом
+ */
 @AllArgsConstructor
 @Getter
 @ToString
@@ -19,10 +22,22 @@ public class ChromosomeInteger extends ChromosomeAbstract<ChromosomeInteger> {
 		return genes;
 	}
 
+	/**
+	 * Создание хромосомы с указанным целочисленным геномом
+	 * @param genes Битовый геном
+	 * @return Хромосома с целочисленным геномом
+	 */
 	public static ChromosomeInteger create(Long[] genes) {
 		return new ChromosomeInteger(genes);
 	}
 
+	/**
+	 * Создание хромосомы со случайным целочисленным геномом
+	 * @param min Хромосома с минимальными значениями генов
+	 * @param max Хромосома с максимальными значениями генов
+	 * @return Хромосома со случайным геномом целых чисел
+	 * @throws WrongChromosomeLengthException При различных длинах хромосом
+	 */
 	public static ChromosomeInteger create(ChromosomeInteger min, ChromosomeInteger max) {
 		if (min.getGenes().length != max.getGenes().length) {
 			throw new WrongChromosomeLengthException();

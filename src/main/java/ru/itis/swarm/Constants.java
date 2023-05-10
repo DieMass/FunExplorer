@@ -3,37 +3,28 @@ package ru.itis.swarm;
 public class Constants {
 
 	/**
-	 * The inertia factor encourages a particle to continue moving in its
-	 * current direction.
+	 * Фактор инерции побуждает частицу продолжать движение в текущем направлении.
 	 */
 	public static final double INERTIA_FACTOR = 0.729;
 
 	/**
-	 * The cognitive weight encourages a particle to move toward its historical
-	 * best-known position.
+	 * Когнитивный вес побуждает частицу двигаться к своему наилучшему историческому положению.
 	 */
 	public static final double COGNITIVE_WEIGHT = 1.49445;
 
 	/**
-	 * The social weight encourages a particle to move toward the best-known
-	 * position found by any of the particle’s swarm-mates.
+	 * Социальный вес побуждает частицу двигаться к наилучшей позиции,
+	 * обнаруженной любым из ее товарищей по рою.
 	 */
 	public static final double SOCIAL_WEIGHT = 1.49445;
 
 	/**
-	 * The global weight encourages a particle to move toward the best-known
-	 * position found by any particle in any swarm.
+	 * Глобальный вес побуждает частицу двигаться к наилучшей позиции, найденной любой частицей в любом рое.
 	 */
 	public static final double GLOBAL_WEIGHT = 0.3645;
 
 	/**
-	 * Upper bound for the random generation. We use it to reduce the
-	 * computation time since we can rawly estimate it.
-	 */
-	public static final int PARTICLE_UPPER_BOUND = 10000000;
-
-	/**
-	 * Private constructor for utility class.
+	 * Приватный конструктор для служебного класса.
 	 */
 	private Constants() {
 	}

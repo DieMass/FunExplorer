@@ -1,5 +1,7 @@
+unnamed package
 ru.itis
 ru.itis.genetic
 ru.itis.genetic.chromosome
 ru.itis.genetic.exception
 ru.itis.swarm
+ru.itis.swarm.particle

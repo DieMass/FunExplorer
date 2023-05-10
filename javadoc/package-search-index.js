@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"ru.itis"},{"l":"ru.itis.genetic"},{"l":"ru.itis.genetic.chromosome"},{"l":"ru.itis.genetic.exception"},{"l":"ru.itis.swarm"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"ru.itis"},{"l":"ru.itis.genetic"},{"l":"ru.itis.genetic.chromosome"},{"l":"ru.itis.genetic.exception"},{"l":"ru.itis.swarm"},{"l":"ru.itis.swarm.particle"}];updateSearchResults();

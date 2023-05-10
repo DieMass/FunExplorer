@@ -10,7 +10,7 @@ import ru.itis.genetic.chromosome.ChromosomeMix;
 import java.util.Arrays;
 import java.util.stream.LongStream;
 
-public class CreateTest {
+public class GeneticTest {
 
 	private final PopulationConfig config = PopulationConfig.builder().build();
 
@@ -86,12 +86,13 @@ public class CreateTest {
 		ChromosomeBit min = null;
 		ChromosomeBit max = null;
 		Integer chromosomeLength = 100;
-
+		PopulationConfig config = PopulationConfig.builder().mutationProbability(0.1).crossingProbability(0.9).generationCount(100).build();
 		Population<ChromosomeBit> population = Population.createRandom(min, max, config,
 				(localMin, localMax) -> ChromosomeBit.create(chromosomeLength));
 
-		population.run(genome -> (double) Arrays.stream(((ChromosomeBit)genome).getGenes()).filter(i -> i).count());
+		Double best = population.run(genome -> (double) Arrays.stream(genome.getGenes()).filter(i -> i).count());
 
+		Assertions.assertTrue(best > 95);
 		Assertions.assertEquals(config.getPopulationSize(), population.getIndividuals().size());
 		population.getIndividuals().forEach(i -> Assertions.assertEquals(chromosomeLength, i.getGenes().length));
 
@@ -109,7 +110,9 @@ public class CreateTest {
 		Population<ChromosomeFloat> population = Population.createRandom(min, max, config,
 				(localMin, localMax) -> ChromosomeFloat.create(min, max));
 
-		population.run(genome -> getValueAt(Arrays.stream(genome.getGenes()).toArray(Double[]::new)));
+		Double best = population.run(genome -> getValueAt(Arrays.stream(genome.getGenes()).toArray(Double[]::new)));
+
+		Assertions.assertTrue(best > 950);
 		Assertions.assertEquals(config.getPopulationSize(), population.getIndividuals().size());
 		population.getIndividuals().forEach(i -> Assertions.assertEquals(chromosomeLength, i.getGenes().length));
 	}

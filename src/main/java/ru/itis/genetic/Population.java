@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 /**
  * Популяция индивидов
+ *
  * @param <T>
  */
 @AllArgsConstructor
@@ -27,11 +28,12 @@ public class Population<T extends Chromosome<T>> {
 
 	/**
 	 * Создание популяции
-	 * @param min минимальное значение для гена
-	 * @param max максимальное значение для гена
+	 *
+	 * @param min    минимальное значение для гена
+	 * @param max    максимальное значение для гена
 	 * @param config настройки популяции
 	 * @param create функция создание индивида
-	 * @param <T> тип хромосомы индивида
+	 * @param <T>    тип хромосомы индивида
 	 * @return созданная популяция
 	 */
 	public static <T extends Chromosome<T>> Population<T> createRandom(T min,
@@ -50,16 +52,19 @@ public class Population<T extends Chromosome<T>> {
 
 	/**
 	 * Запуск генетического алгоритма для популяции
+	 *
 	 * @param fitFunction Функция вычисления значения приспособленности для индивида
 	 */
-	public void run(Function<T, Double> fitFunction) {
+	public Double run(Function<T, Double> fitFunction) {
 		individuals.forEach(i -> i.fit(fitFunction));
+		T best = null;
 		for (int i = 0; i < config.getGenerationCount(); i++) {
-			iterate(i, fitFunction);
+			best = iterate(i, fitFunction);
 		}
+		return best.getFitness();
 	}
 
-	private void iterate(int iteration, Function<T, Double> fitFunction) {
+	private T iterate(int iteration, Function<T, Double> fitFunction) {
 		List<T> list = individuals.stream().sorted(Comparator.comparingDouble(T::getFitness).reversed()).collect(Collectors.toList());
 		List<T> hallOfFame = new ArrayList<>(list.subList(0, config.getHallOfFameSize()));
 		Random random = new Random();
@@ -78,12 +83,10 @@ public class Population<T extends Chromosome<T>> {
 			if (individuals.size() < childrenCount) {
 				T child = children.get(0);
 				child.mutate(config.getMutationProbability(), min, max);
-//				individuals.add(child);
 			}
 			if (individuals.size() < childrenCount) {
 				T child = children.get(1);
 				child.mutate(config.getMutationProbability(), min, max);
-//				individuals.add(child);
 			}
 		}
 		all.forEach(i -> i.fit(fitFunction));
@@ -99,14 +102,11 @@ public class Population<T extends Chromosome<T>> {
 			T best = Stream.of(first, second, third).max(Comparator.comparingDouble(Chromosome::getFitness)).orElseThrow();
 			all.remove(best);
 			individuals.add(best);
-
-//			individuals.add(list.remove(random.nextInt(list.size())));
 		}
 
-
-//		System.out.println(individuals.size());
 		individuals.forEach(i -> i.fit(fitFunction));
 		T best = individuals.stream().max(Comparator.comparingDouble(Chromosome::getFitness)).orElseThrow();
 		System.out.printf("Gen %s, population: %s, fit: %s, Best: %s%n", iteration + 1, individuals.size(), best.getFitness(), best);
+		return best;
 	}
 }

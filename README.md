@@ -45,5 +45,36 @@ class Example {
 
 <img style="display: block; margin-left: auto; margin-right: auto" alt="system schema" src="https://media.springernature.com/lw685/springer-static/image/art%3A10.1007%2Fs41109-020-00260-8/MediaObjects/41109_2020_260_Fig3_HTML.png"/>
 
+### Пример использования
+```java
+class Example {
+    public static void main(String[] args) {
+        Random random = new Random();
+        ParticleFloat max = new ParticleFloat(new Double[]{6.0, 6.0}, new Double[]{0.0, 0.0});
+        ParticleFloat min = new ParticleFloat(new Double[]{-6.0, -6.0}, new Double[]{0.0, 0.0});
+
+
+        Supplier<ParticleFloat> create = () -> {
+            Double[] initialParticlePosition = {
+                    random.nextDouble() * (max.getPosition()[0] - min.getPosition()[0]) + min.getPosition()[0],
+                    random.nextDouble() * (max.getPosition()[1] - min.getPosition()[1]) + min.getPosition()[1],
+            };
+            Double[] initialParticleSpeed = {
+                    random.nextDouble() * (max.getPosition()[0] - min.getPosition()[0]) + min.getPosition()[0],
+                    random.nextDouble() * (max.getPosition()[1] - min.getPosition()[1]) + min.getPosition()[1],
+            };
+            return new ParticleFloat(initialParticlePosition, initialParticleSpeed);
+        };
+        FitnessFunction fitnessFunction = this::getHimmelblau;
+
+        Multiswarm<ParticleFloat> multiswarm = Multiswarm.create(10, 10, fitnessFunction, create, min, max);
+
+        for (int i = 0; i < 500; i++) {
+            multiswarm.mainLoop();
+        }
+    }
+}
+```
+
 ### Полезные ссылки
 - https://towardsdatascience.com/swarm-intelligence-coding-and-visualising-particle-swarm-optimisation-in-python-253e1bd00772 - описание алгоритма и код на Python

@@ -1,14 +1,18 @@
 package ru.itis.service;
 
 import lombok.RequiredArgsConstructor;
+import org.mariuszgromada.math.mxparser.Argument;
+import org.mariuszgromada.math.mxparser.Expression;
 import org.springframework.stereotype.Service;
 import ru.itis.dto.MultiswarmCreateDtoRequest;
 import ru.itis.dto.MultiswarmResultDtoRequest;
 import ru.itis.dto.MultiswarmResultDtoResponse;
+import ru.itis.swarm.FitnessFunction;
 import ru.itis.swarm.Multiswarm;
 import ru.itis.swarm.particle.ParticleFloat;
 
 import java.util.Random;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
@@ -32,8 +36,15 @@ public class SwarmServiceSimple implements SwarmService {
                     .toArray(Double[]::new);
             return new ParticleFloat(initialParticlePosition, initialParticleSpeed);
         };
-        multiswarm = Multiswarm.create(dto.getNumSwarms(), dto.getParticlesPerSwarm(),
-                (args) -> ExpressionUtils.calculateExpression(dto.getExpression(), args), create, min, max);
+        Argument[] arguments = IntStream.range(0, dto.getMax().length).mapToObj(i -> "x" + i).map(Argument::new).toArray(Argument[]::new);
+        Expression expression = ExpressionUtils.createExpression(dto.getExpression(), arguments);
+        FitnessFunction fitnessFunction = (args) -> {
+            for (int i = 0; i < arguments.length; i++) {
+                arguments[i].setArgumentValue(args[i]);
+            }
+            return expression.calculate();
+        };
+        multiswarm = Multiswarm.create(dto.getNumSwarms(), dto.getParticlesPerSwarm(), fitnessFunction, create, min, max);
     }
 
     public MultiswarmResultDtoResponse getResult(MultiswarmResultDtoRequest request) {

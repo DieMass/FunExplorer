@@ -1,5 +1,6 @@
 package ru.itis.service;
 
+import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 
 public class ExpressionUtils {
@@ -11,11 +12,11 @@ public class ExpressionUtils {
         return expression;
     }
 
+    public static Expression createExpression(String expression, Argument ... arguments) {
+        return new Expression(expression, arguments);
+    }
+
     public static double calculateExpression(String expression, Comparable<?>[] args) {
         return new Expression(ExpressionUtils.createExpressionString(expression, args)).calculate();
     }
-
-//    public static double calculateExpression(String expression, Double[] args) {
-//        return new Expression(ExpressionUtils.createExpressionString(expression, args)).calculate();
-//    }
 }

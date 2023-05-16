@@ -4,10 +4,8 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import ru.itis.dto.GeneticResultDtoRequest;
-import ru.itis.dto.MultiswarmResultDtoResponse;
+import ru.itis.dto.GeneticResultDtoResponse;
 import ru.itis.dto.PopulationCreateDtoRequest;
-
-import java.util.HashMap;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.hasJsonPath;
 
@@ -36,7 +34,7 @@ public class IntegrationGeneticTest extends  IntegrationTest {
     public void calculateGenetic() {
         createPopulation();
 
-        MultiswarmResultDtoResponse response = RestAssuredMockMvc.given()
+        GeneticResultDtoResponse response = RestAssuredMockMvc.given()
                 .body(GeneticResultDtoRequest.builder()
                         .expression("-(-(x1+47)*sin(sqrt(abs((x0/2)+(x1+47))))-x0*sin(sqrt(abs(x0-(x1+47)))))")
                         .build())
@@ -47,7 +45,7 @@ public class IntegrationGeneticTest extends  IntegrationTest {
                 .body(
                         hasJsonPath("$.bestFitness", Matchers.greaterThan(950.0))
                 )
-                .extract().body().as(MultiswarmResultDtoResponse.class);
+                .extract().body().as(GeneticResultDtoResponse.class);
         System.out.println(response);
     }
 }

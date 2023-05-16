@@ -1,3 +1,5 @@
+package ru.itis;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.itis.genetic.Population;

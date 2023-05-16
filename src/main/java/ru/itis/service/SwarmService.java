@@ -11,6 +11,8 @@ public interface SwarmService {
 
     List<SwarmDto> getAll();
 
+    SwarmDto get(UUID swarmId);
+
     MultiswarmResultDtoResponse getResult(UUID swarmId, MultiswarmResultDtoRequest request);
 
     void deleteSwarm(UUID swarmId);

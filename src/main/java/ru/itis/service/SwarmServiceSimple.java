@@ -53,14 +53,23 @@ public class SwarmServiceSimple implements SwarmService {
     public List<SwarmDto> getAll() {
         return multiswarms.entrySet().stream().map(i -> {
             Multiswarm<ParticleFloat> multiswarm = i.getValue();
-            return SwarmDto.builder()
-                    .id(i.getKey())
-                    .numSwarms(multiswarm.getSwarms().length)
-                    .particlesPerSwarm(multiswarm.getSwarms()[0].getParticles().length)
-                    .min(multiswarm.getMin().getPosition())
-                    .max(multiswarm.getMax().getPosition())
-                    .build();
+            return map(multiswarm, i.getKey());
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public SwarmDto get(UUID swarmId) {
+        return map(multiswarms.get(swarmId), swarmId);
+    }
+
+    private SwarmDto map(Multiswarm<ParticleFloat> multiswarm, UUID id) {
+        return SwarmDto.builder()
+                .id(id)
+                .numSwarms(multiswarm.getSwarms().length)
+                .particlesPerSwarm(multiswarm.getSwarms()[0].getParticles().length)
+                .min(multiswarm.getMin().getPosition())
+                .max(multiswarm.getMax().getPosition())
+                .build();
     }
 
     public MultiswarmResultDtoResponse getResult(UUID swarmId, MultiswarmResultDtoRequest request) {

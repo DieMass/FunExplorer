@@ -25,6 +25,11 @@ public class SwarmController {
         return service.getAll();
     }
 
+    @GetMapping("/{swarmId}")
+    public SwarmDto getAll(@PathVariable UUID swarmId) {
+        return service.get(swarmId);
+    }
+
     @DeleteMapping("/{swarmId}")
     public void deleteSwarm(@PathVariable UUID swarmId) {
         service.deleteSwarm(swarmId);

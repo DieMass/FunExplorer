@@ -14,6 +14,8 @@ public interface GeneticService {
 
     List<PopulationDto> getAll();
 
+    PopulationDto get(UUID populationId);
+
     GeneticResultDtoResponse calculateResult(UUID populationId, GeneticResultDtoRequest request);
 
     void deletePopulation(UUID populationId);

@@ -25,6 +25,11 @@ public class GeneticController {
         return service.getAll();
     }
 
+    @GetMapping("/{populationId}")
+    public PopulationDto getAll(@PathVariable UUID populationId) {
+        return service.get(populationId);
+    }
+
     @DeleteMapping("/{populationId}")
     public void deletePopulation(@PathVariable UUID populationId) {
         service.deletePopulation(populationId);

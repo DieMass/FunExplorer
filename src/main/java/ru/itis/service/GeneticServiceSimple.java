@@ -46,16 +46,23 @@ public class GeneticServiceSimple implements GeneticService {
     public List<PopulationDto> getAll() {
         return populations.entrySet().stream().map(i -> {
             Population<ChromosomeFloat> population = i.getValue();
-            return PopulationDto.builder()
-                    .id(i.getKey())
-                    .min(population.getMin().getGenes())
-                    .max(population.getMax().getGenes())
-                    .config(population.getConfig())
-                    .build();
+            return map(population, i.getKey());
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public PopulationDto get(UUID populationId) {
+        return map(populations.get(populationId), populationId);
+    }
 
+    private PopulationDto map(Population<ChromosomeFloat> population, UUID id) {
+        return PopulationDto.builder()
+                .id(id)
+                .min(population.getMin().getGenes())
+                .max(population.getMax().getGenes())
+                .config(population.getConfig())
+                .build();
+    }
 
     @Override
     public GeneticResultDtoResponse calculateResult(UUID populationId, GeneticResultDtoRequest request) {

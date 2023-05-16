@@ -4,25 +4,23 @@ import lombok.RequiredArgsConstructor;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.springframework.stereotype.Service;
-import ru.itis.dto.MultiswarmCreateDtoRequest;
-import ru.itis.dto.MultiswarmResultDtoRequest;
-import ru.itis.dto.MultiswarmResultDtoResponse;
+import ru.itis.dto.*;
 import ru.itis.swarm.FitnessFunction;
 import ru.itis.swarm.Multiswarm;
 import ru.itis.swarm.particle.ParticleFloat;
 
-import java.util.Random;
-import java.util.function.Function;
+import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
 public class SwarmServiceSimple implements SwarmService {
 
-    private Multiswarm<ParticleFloat> multiswarm;
+    private final Map<UUID, Multiswarm<ParticleFloat>> multiswarms = new HashMap<>();
 
-    public void createMultiswarm(MultiswarmCreateDtoRequest dto) {
+    public UUID createMultiswarm(MultiswarmCreateDtoRequest dto) {
         Random random = new Random();
         ParticleFloat max = new ParticleFloat(dto.getMax(), null);
         ParticleFloat min = new ParticleFloat(dto.getMin(), null);
@@ -44,13 +42,37 @@ public class SwarmServiceSimple implements SwarmService {
             }
             return expression.calculate();
         };
-        multiswarm = Multiswarm.create(dto.getNumSwarms(), dto.getParticlesPerSwarm(), fitnessFunction, create, min, max);
+
+        UUID id = UUID.randomUUID();
+        multiswarms.put(id, Multiswarm.create(dto.getNumSwarms(), dto.getParticlesPerSwarm(), fitnessFunction, create, min, max));
+
+        return id;
     }
 
-    public MultiswarmResultDtoResponse getResult(MultiswarmResultDtoRequest request) {
+    @Override
+    public List<SwarmDto> getAll() {
+        return multiswarms.entrySet().stream().map(i -> {
+            Multiswarm<ParticleFloat> multiswarm = i.getValue();
+            return SwarmDto.builder()
+                    .id(i.getKey())
+                    .numSwarms(multiswarm.getSwarms().length)
+                    .particlesPerSwarm(multiswarm.getSwarms()[0].getParticles().length)
+                    .min(multiswarm.getMin().getPosition())
+                    .max(multiswarm.getMax().getPosition())
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
+    public MultiswarmResultDtoResponse getResult(UUID swarmId, MultiswarmResultDtoRequest request) {
+        Multiswarm<ParticleFloat> multiswarm = multiswarms.get(swarmId);
         for (int i = 0; i < request.getLoopCount(); i++) {
             multiswarm.mainLoop();
         }
         return MultiswarmResultDtoResponse.builder().bestPosition(multiswarm.getBestPosition()).bestFitness(multiswarm.getBestFitness()).build();
+    }
+
+    @Override
+    public void deleteSwarm(UUID swarmId) {
+        multiswarms.remove(swarmId);
     }
 }

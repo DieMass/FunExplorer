@@ -1,12 +1,17 @@
 package ru.itis.service;
 
-import ru.itis.dto.MultiswarmCreateDtoRequest;
-import ru.itis.dto.MultiswarmResultDtoRequest;
-import ru.itis.dto.MultiswarmResultDtoResponse;
+import ru.itis.dto.*;
+
+import java.util.List;
+import java.util.UUID;
 
 public interface SwarmService {
 
-    void createMultiswarm(MultiswarmCreateDtoRequest dto);
+    UUID createMultiswarm(MultiswarmCreateDtoRequest dto);
 
-    MultiswarmResultDtoResponse getResult(MultiswarmResultDtoRequest request);
+    List<SwarmDto> getAll();
+
+    MultiswarmResultDtoResponse getResult(UUID swarmId, MultiswarmResultDtoRequest request);
+
+    void deleteSwarm(UUID swarmId);
 }

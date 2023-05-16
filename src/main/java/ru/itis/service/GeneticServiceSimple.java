@@ -7,23 +7,26 @@ import org.springframework.stereotype.Service;
 import ru.itis.dto.GeneticResultDtoRequest;
 import ru.itis.dto.GeneticResultDtoResponse;
 import ru.itis.dto.PopulationCreateDtoRequest;
+import ru.itis.dto.PopulationDto;
 import ru.itis.genetic.Population;
 import ru.itis.genetic.PopulationConfig;
 import ru.itis.genetic.chromosome.Chromosome;
 import ru.itis.genetic.chromosome.ChromosomeAbstract;
 import ru.itis.genetic.chromosome.ChromosomeFloat;
 
-import java.util.Comparator;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
 public class GeneticServiceSimple implements GeneticService {
 
-    private Population<ChromosomeFloat> population;
+    private final Map<UUID, Population<ChromosomeFloat>> populations = new HashMap<>();
+
     @Override
-    public void createPopulation(PopulationCreateDtoRequest request) {
+    public UUID createPopulation(PopulationCreateDtoRequest request) {
         PopulationConfig config = PopulationConfig.builder()
                 .populationSize(request.getPopulationSize())
                 .generationCount(request.getGenerationCount())
@@ -34,12 +37,30 @@ public class GeneticServiceSimple implements GeneticService {
         ChromosomeFloat min = ChromosomeFloat.create(request.getMin());
         ChromosomeFloat max = ChromosomeFloat.create(request.getMax());
 
-
-        population = Population.createRandom(min, max, config, (localMin, localMax) -> ChromosomeFloat.create(min, max));
+        UUID id = UUID.randomUUID();
+        populations.put(id, Population.createRandom(min, max, config, (localMin, localMax) -> ChromosomeFloat.create(min, max)));
+        return id;
     }
 
     @Override
-    public GeneticResultDtoResponse calculateResult(GeneticResultDtoRequest request) {
+    public List<PopulationDto> getAll() {
+        return populations.entrySet().stream().map(i -> {
+            Population<ChromosomeFloat> population = i.getValue();
+            return PopulationDto.builder()
+                    .id(i.getKey())
+                    .min(population.getMin().getGenes())
+                    .max(population.getMax().getGenes())
+                    .config(population.getConfig())
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
+
+
+    @Override
+    public GeneticResultDtoResponse calculateResult(UUID populationId, GeneticResultDtoRequest request) {
+        Population<ChromosomeFloat> population = populations.get(populationId);
+
         Argument[] arguments = IntStream.range(0, population.getMax().getGenes().length).mapToObj(i -> "x" + i).map(Argument::new).toArray(Argument[]::new);
         Expression expression = ExpressionUtils.createExpression(request.getExpression(), arguments);
         Function<ChromosomeFloat, Double> function = (chromosome -> {
@@ -53,5 +74,10 @@ public class GeneticServiceSimple implements GeneticService {
         Double answer = population.run(function);
         ChromosomeFloat best = population.getIndividuals().stream().max(Comparator.comparingDouble(ChromosomeAbstract::getFitness)).orElseThrow();
         return GeneticResultDtoResponse.builder().bestFitness(answer).bestChromosome(best.getGenes()).build();
+    }
+
+    @Override
+    public void deletePopulation(UUID populationId) {
+        populations.remove(populationId);
     }
 }

@@ -3,10 +3,18 @@ package ru.itis.service;
 import ru.itis.dto.GeneticResultDtoRequest;
 import ru.itis.dto.GeneticResultDtoResponse;
 import ru.itis.dto.PopulationCreateDtoRequest;
+import ru.itis.dto.PopulationDto;
+
+import java.util.List;
+import java.util.UUID;
 
 public interface GeneticService {
 
-    void createPopulation(PopulationCreateDtoRequest request);
+    UUID createPopulation(PopulationCreateDtoRequest request);
 
-    GeneticResultDtoResponse calculateResult(GeneticResultDtoRequest request);
+    List<PopulationDto> getAll();
+
+    GeneticResultDtoResponse calculateResult(UUID populationId, GeneticResultDtoRequest request);
+
+    void deletePopulation(UUID populationId);
 }

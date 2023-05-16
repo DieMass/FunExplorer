@@ -2,10 +2,11 @@ package ru.itis.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.itis.dto.MultiswarmCreateDtoRequest;
-import ru.itis.dto.MultiswarmResultDtoRequest;
-import ru.itis.dto.MultiswarmResultDtoResponse;
+import ru.itis.dto.*;
 import ru.itis.service.SwarmService;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/swarm")
@@ -19,9 +20,19 @@ public class SwarmController {
         service.createMultiswarm(request);
     }
 
-    @GetMapping("/calculate")
-    public MultiswarmResultDtoResponse getResult(MultiswarmResultDtoRequest request) {
-        return service.getResult(request);
+    @GetMapping
+    public List<SwarmDto> getAll() {
+        return service.getAll();
+    }
+
+    @DeleteMapping("/{swarmId}")
+    public void deleteSwarm(@PathVariable UUID swarmId) {
+        service.deleteSwarm(swarmId);
+    }
+
+    @GetMapping("/{swarmId}/calculate")
+    public MultiswarmResultDtoResponse getResult(@PathVariable UUID swarmId, MultiswarmResultDtoRequest request) {
+        return service.getResult(swarmId, request);
     }
 
 }

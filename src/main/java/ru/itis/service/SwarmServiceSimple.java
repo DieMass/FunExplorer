@@ -19,6 +19,7 @@ import java.util.stream.IntStream;
 public class SwarmServiceSimple implements SwarmService {
 
     private final Map<UUID, Multiswarm<ParticleFloat>> multiswarms = new HashMap<>();
+    private final Map<UUID, Expression> expressions = new HashMap<>();
 
     public UUID createMultiswarm(MultiswarmCreateDtoRequest dto) {
         Random random = new Random();
@@ -45,7 +46,7 @@ public class SwarmServiceSimple implements SwarmService {
 
         UUID id = UUID.randomUUID();
         multiswarms.put(id, Multiswarm.create(dto.getNumSwarms(), dto.getParticlesPerSwarm(), fitnessFunction, create, min, max));
-
+        expressions.put(id, expression);
         return id;
     }
 
@@ -65,6 +66,7 @@ public class SwarmServiceSimple implements SwarmService {
     private SwarmDto map(Multiswarm<ParticleFloat> multiswarm, UUID id) {
         return SwarmDto.builder()
                 .id(id)
+                .expression(expressions.get(id).getExpressionString())
                 .numSwarms(multiswarm.getSwarms().length)
                 .particlesPerSwarm(multiswarm.getSwarms()[0].getParticles().length)
                 .min(multiswarm.getMin().getPosition())

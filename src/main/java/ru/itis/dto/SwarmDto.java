@@ -17,4 +17,5 @@ public class SwarmDto {
     private Double[] max;
     private int numSwarms;
     private int particlesPerSwarm;
+    private String expression;
 }

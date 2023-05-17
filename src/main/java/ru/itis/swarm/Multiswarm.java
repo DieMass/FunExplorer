@@ -59,11 +59,6 @@ public class Multiswarm<T extends Particle<T>> {
 	/**
 	 *	Итерация основного цикла вычислений
 	 */
-	public void mainLoop(FitnessFunction fitnessFunction) {
-		this.fitnessFunction = fitnessFunction;
-		mainLoop();
-	}
-
 	public void mainLoop() {
 		for (Swarm<T> swarm : swarms) {
 			for (Particle particle : swarm.getParticles()) {

@@ -35,7 +35,7 @@ public class GeneticController {
         service.deletePopulation(populationId);
     }
 
-    @PostMapping("/{populationId}/calculate")
+    @PutMapping("/{populationId}/calculate")
     public GeneticResultDtoResponse getResult(@PathVariable UUID populationId, @RequestBody GeneticResultDtoRequest request) {
         return service.calculateResult(populationId, request);
     }

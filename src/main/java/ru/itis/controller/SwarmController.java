@@ -35,8 +35,8 @@ public class SwarmController {
         service.deleteSwarm(swarmId);
     }
 
-    @PostMapping("/{swarmId}/calculate")
-    public MultiswarmResultDtoResponse getResult(@PathVariable UUID swarmId, @RequestBody MultiswarmResultDtoRequest request) {
+    @GetMapping("/{swarmId}/calculate")
+    public MultiswarmResultDtoResponse getResult(@PathVariable UUID swarmId, MultiswarmResultDtoRequest request) {
         return service.getResult(swarmId, request);
     }
 

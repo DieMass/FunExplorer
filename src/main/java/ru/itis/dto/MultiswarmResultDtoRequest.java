@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MultiswarmResultDtoRequest {
     private Integer loopCount;
+    private String expression;
 }

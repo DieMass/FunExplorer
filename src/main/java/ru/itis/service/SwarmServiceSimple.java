@@ -34,17 +34,9 @@ public class SwarmServiceSimple implements SwarmService {
                     .toArray(Double[]::new);
             return new ParticleFloat(initialParticlePosition, initialParticleSpeed);
         };
-        Argument[] arguments = IntStream.range(0, dto.getMax().length).mapToObj(i -> "x" + i).map(Argument::new).toArray(Argument[]::new);
-        Expression expression = ExpressionUtils.createExpression(dto.getExpression(), arguments);
-        FitnessFunction fitnessFunction = (args) -> {
-            for (int i = 0; i < arguments.length; i++) {
-                arguments[i].setArgumentValue(args[i]);
-            }
-            return expression.calculate();
-        };
 
         UUID id = UUID.randomUUID();
-        multiswarms.put(id, Multiswarm.create(dto.getNumSwarms(), dto.getParticlesPerSwarm(), fitnessFunction, create, min, max));
+        multiswarms.put(id, Multiswarm.create(dto.getNumSwarms(), dto.getParticlesPerSwarm(), null, create, min, max));
 
         return id;
     }
@@ -74,8 +66,16 @@ public class SwarmServiceSimple implements SwarmService {
 
     public MultiswarmResultDtoResponse getResult(UUID swarmId, MultiswarmResultDtoRequest request) {
         Multiswarm<ParticleFloat> multiswarm = multiswarms.get(swarmId);
+        Argument[] arguments = IntStream.range(0, multiswarm.getMax().getPosition().length).mapToObj(i -> "x" + i).map(Argument::new).toArray(Argument[]::new);
+        Expression expression = ExpressionUtils.createExpression(request.getExpression(), arguments);
+        FitnessFunction fitnessFunction = (args) -> {
+            for (int i = 0; i < arguments.length; i++) {
+                arguments[i].setArgumentValue(args[i]);
+            }
+            return expression.calculate();
+        };
         for (int i = 0; i < request.getLoopCount(); i++) {
-            multiswarm.mainLoop();
+            multiswarm.mainLoop(fitnessFunction);
         }
         return MultiswarmResultDtoResponse.builder().bestPosition(multiswarm.getBestPosition()).bestFitness(multiswarm.getBestFitness()).build();
     }

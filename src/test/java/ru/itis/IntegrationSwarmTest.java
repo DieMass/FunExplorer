@@ -4,6 +4,7 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import ru.itis.dto.MultiswarmCreateDtoRequest;
+import ru.itis.dto.MultiswarmResultDtoRequest;
 import ru.itis.dto.MultiswarmResultDtoResponse;
 
 import java.util.HashMap;
@@ -34,10 +35,11 @@ public class IntegrationSwarmTest extends IntegrationTest {
     public void calculateSwarm() {
         createSwarm();
 
-        MultiswarmResultDtoResponse response = RestAssuredMockMvc.given().params(new HashMap<>(){{
-            put("loopCount", 10);
-                }})
-                .get("/api/swarm/calculate")
+        MultiswarmResultDtoResponse response = RestAssuredMockMvc.given()
+                .body(MultiswarmResultDtoRequest.builder()
+                        .loopCount(10)
+                        .build())
+                .post("/api/swarm/calculate")
                 .then()
                 .log().all()
                 .assertThat().statusCode(200)

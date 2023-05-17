@@ -38,7 +38,7 @@ public class IntegrationGeneticTest extends  IntegrationTest {
                 .body(GeneticResultDtoRequest.builder()
                         .expression("-(-(x1+47)*sin(sqrt(abs((x0/2)+(x1+47))))-x0*sin(sqrt(abs(x0-(x1+47)))))")
                         .build())
-                .put("/api/genetic/calculate")
+                .post("/api/genetic/calculate")
                 .then()
                 .log().all()
                 .assertThat().statusCode(200)
